@@ -1,21 +1,19 @@
 # Docker Kirara Agent
 
-这是一个Docker Kirara代理项目，用于提供Kirara服务的Docker容器化解决方案。
+一个基于Docker的Kirara Agent部署工具，支持自动安装Docker和Docker Compose，实现无人值守部署。
 
-## 功能特点
+## 特性
 
-- 简化Kirara服务的部署
-- 提供容器化的Kirara代理服务
-- 支持快速配置和使用
-- 支持多种环境部署
-- 高性能、低延迟的服务体验
+- 自动检测系统环境
+- 智能识别Linux发行版
+- 自动安装Docker和Docker Compose
+- 无人值守部署
+- 支持Windows和Linux系统
 
-## 安装要求
+## 系统要求
 
-- Docker 19.03+
-- Docker Compose 1.27+
-- 至少1GB可用内存
-- 至少10GB可用磁盘空间
+- Linux (Ubuntu, Debian, CentOS, Fedora, SUSE, Arch等)
+- Windows (需要手动安装Docker Desktop)
 
 ## 使用方法
 
@@ -31,11 +29,26 @@ cd docker-kirara-agent
 
 # 启动服务 (Windows)
 start.bat
-docker-compose up -d
 
-# 使用脚本URL部署
+# 使用脚本URL部署 (仅限Linux)
 curl -fsSL https://raw.githubusercontent.com/liuyingjian520/docker-kirara-agent/main/start.sh | bash
+wget -O- https://raw.githubusercontent.com/liuyingjian520/docker-kirara-agent/main/start.sh | bash
 ```
+
+## 功能说明
+
+### Linux自动安装
+
+在Linux系统上，脚本会自动检测系统环境，并根据不同的Linux发行版自动安装Docker和Docker Compose。支持的Linux发行版包括：
+
+- Ubuntu/Debian系列
+- CentOS/RHEL/Fedora系列
+- SUSE系列
+- Arch系列
+
+### Windows手动安装
+
+在Windows系统上，脚本会检测Docker和Docker Compose是否已安装，如果未安装，会提示用户手动安装。
 
 ### 配置
 
