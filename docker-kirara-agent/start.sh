@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# 检查是否为Windows操作系统
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    echo "错误: 不支持Windows操作系统"
+    exit 1
+fi
+
 # 检查Docker是否安装
 if ! command -v docker &> /dev/null; then
     echo "错误: Docker未安装，请先安装Docker"
