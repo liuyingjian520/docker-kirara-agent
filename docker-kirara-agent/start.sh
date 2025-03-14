@@ -22,4 +22,7 @@ fi
 echo "正在启动Kirara Agent服务..."
 docker-compose up -d
 
+# 添加日志记录
+echo "$(date +'%Y-%m-%d %H:%M:%S') [info] Kirara Agent服务已启动" >> service.log
+
 echo "服务已启动，访问 http://localhost:8080 查看服务状态"
