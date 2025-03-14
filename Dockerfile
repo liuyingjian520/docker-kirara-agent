@@ -1,19 +1,26 @@
-# GCC support can be specified at major, minor, or micro version
-# (e.g. 8, 8.2 or 8.2.0).
-# See https://hub.docker.com/r/library/gcc/ for all supported GCC
-# tags from Docker Hub.
-# See https://docs.docker.com/samples/library/gcc/ for more on how to use this image
-FROM gcc:latest
+FROM node:16-alpine
 
-# These commands copy your files into the specified directory in the image
-# and set that as the working location
-COPY . /usr/src/myapp
-WORKDIR /usr/src/myapp
+WORKDIR /app
 
-# This command compiles your app using GCC, adjust for your source code
-RUN g++ -o myapp main.cpp
+# 创建必要的目录
+RUN mkdir -p /app/src /app/config
 
-# This command runs your application, comment out this line to compile only
-CMD ["./myapp"]
+# 复制源代码和配置文件
+COPY src/ /app/src/
+COPY config/ /app/config/
 
-LABEL Name=dockerkiraraagent Version=0.0.1
+# 安装依赖
+COPY package.json /app/
+RUN npm install --production
+
+# 设置环境变量
+ENV PORT=8080
+ENV LOG_LEVEL=info
+
+# 暴露端口
+EXPOSE 8080
+
+# 启动命令
+CMD ["node", "src/index.js"]
+
+LABEL Name=kirara-agent Version=1.0.0

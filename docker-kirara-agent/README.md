@@ -34,7 +34,7 @@ start.bat
 docker-compose up -d
 
 # 使用脚本URL部署
-curl -fsSL https://github.com/liuyingjian520/docker-kirara-agent.git | bash
+wget -O- https://raw.githubusercontent.com/liuyingjian520/docker-kirara-agent/main/start.sh | bash
 ```
 
 ### 配置

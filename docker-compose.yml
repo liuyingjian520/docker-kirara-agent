@@ -1,8 +1,16 @@
-version: '3.4'
+version: '3'
 
 services:
-  dockerkiraraagent:
-    image: dockerkiraraagent
+  kirara-agent:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
+    container_name: kirara-agent
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config:/app/config
+    environment:
+      - PORT=8080
+      - LOG_LEVEL=info
