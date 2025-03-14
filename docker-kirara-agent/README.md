@@ -32,6 +32,9 @@ cd docker-kirara-agent
 # 启动服务 (Windows)
 start.bat
 docker-compose up -d
+
+# 使用脚本URL部署
+curl -fsSL https://github.com/liuyingjian520/docker-kirara-agent.git | bash
 ```
 
 ### 配置
