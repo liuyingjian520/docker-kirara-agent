@@ -12,11 +12,7 @@ ENV TZ=Asia/Shanghai
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:8080/api/health || exit 1
 
-# 暴露端口
-EXPOSE 8080
-
-# 启动命令
-CMD ["./kirara-agent"]
+# 复制依赖文件并安装
 COPY package*.json ./
 RUN npm install
 
