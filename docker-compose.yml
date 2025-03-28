@@ -8,18 +8,9 @@ services:
     container_name: kirara-agent
     restart: unless-stopped
     ports:
-      - "8443:8080"
+      - "3970:8080"  # 更换安全端口为 8888
     volumes:
       - ./config:/app/config
     environment:
       - PORT=8080
       - LOG_LEVEL=info
-
-  deploy-server:
-    image: nginx:alpine
-    container_name: deploy-server
-    restart: unless-stopped
-    ports:
-      - "8081:80"
-    volumes:
-      - ./deploy:/usr/share/nginx/html:ro
