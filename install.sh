@@ -135,13 +135,6 @@ install_docker_compose() {
         curl -L "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         chmod +x /usr/local/bin/docker-compose
         
-        # 如果上述下载失败，尝试使用备用地址
-        if [ ! -f /usr/local/bin/docker-compose ] || [ ! -x /usr/local/bin/docker-compose ]; then
-            log_warn "从GitHub下载Docker Compose失败，尝试使用备用地址..."
-            curl -L "https://get.daocloud.io/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
-        fi
-        
         # 验证Docker Compose安装
         if command -v docker-compose &>/dev/null; then
             COMPOSE_VERSION=$(docker-compose --version | sed 's/.*version \([0-9.]*\).*/\1/')
@@ -202,7 +195,7 @@ configure_project() {
     cat > config/default.json << EOF
 {
   "server": {
-    "port": 8443,
+    "port": 8080,
     "logLevel": "info"
   },
   "agent": {
@@ -249,7 +242,7 @@ start_service() {
     # 检查服务是否成功启动
     if [ $? -eq 0 ]; then
         log_success "Kirara Agent服务启动成功！"
-        log_success "您可以通过 https://localhost:8443 访问服务"
+        log_success "您可以通过 https://localhost:8888 访问服务"  # 更新访问地址
     else
         log_error "Kirara Agent服务启动失败，请检查日志"
         exit 1
@@ -281,7 +274,7 @@ main() {
     
     log_success "=================================================="
     log_success "       Kirara Agent 安装完成！"
-    log_success "       访问地址: https://localhost:8443"
+    log_success "       访问地址: https://localhost:8888"  # 更新访问地址
     log_success "       默认用户名: admin"
     log_success "       默认密码: change_me_immediately"
     log_success "       请务必修改默认密码！"
