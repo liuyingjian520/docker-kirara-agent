@@ -135,6 +135,13 @@ install_docker_compose() {
         curl -L "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         chmod +x /usr/local/bin/docker-compose
         
+        # 如果上述下载失败，尝试使用备用地址
+        if [ ! -f /usr/local/bin/docker-compose ] || [ ! -x /usr/local/bin/docker-compose ]; then
+            log_warn "从GitHub下载Docker Compose失败，尝试使用备用地址..."
+            curl -L "https://get.daocloud.io/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+        fi
+        
         # 验证Docker Compose安装
         if command -v docker-compose &>/dev/null; then
             COMPOSE_VERSION=$(docker-compose --version | sed 's/.*version \([0-9.]*\).*/\1/')

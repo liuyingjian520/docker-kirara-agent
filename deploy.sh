@@ -95,12 +95,12 @@ log "创建临时目录: $TMP_DIR"
 
 # 克隆仓库
 log "正在克隆Kirara Agent仓库..."
-git clone https://github.com/user/docker-kirara-agent.git $TMP_DIR/docker-kirara-agent
+git clone https://github.com/kirara-project/docker-kirara-agent.git $TMP_DIR/docker-kirara-agent
 if [ $? -ne 0 ]; then
     log_error "克隆仓库失败，尝试使用备用方法下载..."
     # 备用下载方法
     mkdir -p $TMP_DIR/docker-kirara-agent
-    curl -fsSL https://raw.githubusercontent.com/user/docker-kirara-agent/main/install.sh -o $TMP_DIR/docker-kirara-agent/install.sh
+    curl -fsSL https://raw.githubusercontent.com/kirara-project/docker-kirara-agent/main/install.sh -o $TMP_DIR/docker-kirara-agent/install.sh
     chmod +x $TMP_DIR/docker-kirara-agent/install.sh
     
     if [ ! -f $TMP_DIR/docker-kirara-agent/install.sh ]; then
