@@ -37,7 +37,7 @@ if %errorLevel% neq 0 (
 
 :: 下载安装脚本
 echo %GREEN%正在下载Kirara Agent安装脚本...%NC%
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/user/docker-kirara-agent/main/install.bat' -OutFile '%TEMP%\install.bat'"
+powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/kirara-project/docker-kirara-agent/main/install.bat' -OutFile '%TEMP%\install.bat'"
 
 if %errorLevel% neq 0 (
     echo %RED%下载安装脚本失败，请检查网络连接%NC%

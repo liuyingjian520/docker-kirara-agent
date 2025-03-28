@@ -1,7 +1,7 @@
 # Docker Kirara Agent
 
 [![Docker](https://img.shields.io/docker/pulls/liuyingjian520/kirara-agent.svg)](https://hub.docker.com/r/liuyingjian520/kirara-agent)
-[![License](https://img.shields.io/github/license/user/docker-kirara-agent.svg)](LICENSE)
+[![License](https://img.shields.io/github/license/kirara-project/docker-kirara-agent.svg)](LICENSE)
 
 ## 项目介绍
 
@@ -24,12 +24,12 @@ Docker Kirara Agent 是一个容器化的代理服务，提供了简单易用的
 
 ```bash
 # 复制下面的命令到终端运行
-curl -fsSL https://raw.githubusercontent.com/user/docker-kirara-agent/main/deploy.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/kirara-project/docker-kirara-agent/main/deploy.sh | sudo bash
 ```
 
 #### Windows系统
 
-1. 下载 [deploy.bat](https://raw.githubusercontent.com/user/docker-kirara-agent/main/deploy.bat) 文件
+1. 下载 [deploy.bat](https://raw.githubusercontent.com/kirara-project/docker-kirara-agent/main/deploy.bat) 文件
 2. 右键点击，选择「以管理员身份运行」
 
 ### 方法二：手动安装
@@ -44,7 +44,7 @@ curl -fsSL https://raw.githubusercontent.com/user/docker-kirara-agent/main/deplo
 1. 克隆仓库
 
 ```bash
-git clone https://github.com/user/docker-kirara-agent.git
+git clone https://github.com/kirara-project/docker-kirara-agent.git
 cd docker-kirara-agent
 ```
 

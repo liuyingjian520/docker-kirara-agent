@@ -14,3 +14,12 @@ services:
     environment:
       - PORT=8080
       - LOG_LEVEL=info
+
+  deploy-server:
+    image: nginx:alpine
+    container_name: deploy-server
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./deploy:/usr/share/nginx/html:ro
