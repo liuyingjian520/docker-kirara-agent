@@ -1,0 +1,50 @@
+{
+  "server": {
+    "port": 8443,
+    "logLevel": "info"
+  },
+  "agent": {
+    "name": "Kirara Agent",
+    "version": "1.0.0"
+  },
+  "security": {
+    "enabled": true,
+    "ssl": {
+      "enabled": true,
+      "cert": "/app/ssl/cert.pem",
+      "key": "/app/ssl/key.pem"
+    },
+    "authentication": {
+      "enabled": true,
+      "tokenExpiration": 86400,
+      "users": [
+        {
+          "username": "admin",
+          "password": "change_me_immediately",
+          "role": "admin"
+        }
+      ]
+    },
+    "rateLimiting": {
+      "enabled": true,
+      "maxRequests": 100,
+      "windowMs": 900000
+    }
+  },
+  "proxy": {
+    "timeout": 30000,
+    "retries": 3,
+    "cacheEnabled": true
+  },
+  "monitoring": {
+    "enabled": true,
+    "prometheus": {
+      "enabled": true,
+      "collectDefaultMetrics": true
+    }
+  },
+  "autoUpdate": {
+    "enabled": true,
+    "checkInterval": 86400
+  }
+}
