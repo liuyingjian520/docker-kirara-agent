@@ -1,0 +1,34 @@
+{
+  "server": {
+    "port": 8080,
+    "logLevel": "info"
+  },
+  "agent": {
+    "name": "Kirara Agent",
+    "version": "1.0.0"
+  },
+  "security": {
+    "enabled": true,
+    "ssl": {
+      "enabled": true,
+      "cert": "/app/ssl/cert.pem",
+      "key": "/app/ssl/key.pem"
+    },
+    "authentication": {
+      "enabled": true,
+      "tokenExpiration": 86400,
+      "users": [
+        {
+          "username": "admin",
+          "password": "change_me_immediately",
+          "role": "admin"
+        }
+      ]
+    },
+    "rateLimiting": {
+      "enabled": true,
+      "maxRequests": 100,
+      "windowMs": 60000
+    }
+  }
+}
