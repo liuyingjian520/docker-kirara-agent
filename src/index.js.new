@@ -1,0 +1,181 @@
+/**
+ * Kirara Agent 服务入口文件
+ * 支持自动检测系统环境、安全端口配置
+ */
+
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+const http = require('http');
+const os = require('os');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const promClient = require('prom-client');
+
+// 加载配置
+let config;
+try {
+  config = require('../config/default.json');
+} catch (err) {
+  console.error('无法加载配置文件，使用默认配置');
+  config = {
+    server: {
+      port: process.env.PORT || 8080,
+      logLevel: process.env.LOG_LEVEL || 'info'
+    },
+    agent: {
+      name: 'Kirara Agent',
+      version: '1.0.0'
+    },
+    security: {
+      enabled: true,
+      ssl: {
+        enabled: false
+      },
+      authentication: {
+        enabled: false
+      }
+    }
+  };
+}
+
+// 创建Express应用
+const app = express();
+const port = process.env.PORT || config.server.port || 8080;
+
+// 系统信息
+const systemInfo = {
+  platform: os.platform(),
+  release: os.release(),
+  hostname: os.hostname(),
+  arch: os.arch(),
+  cpus: os.cpus().length,
+  totalMemory: Math.round(os.totalmem() / (1024 * 1024 * 1024)) + 'GB',
+  freeMemory: Math.round(os.freemem() / (1024 * 1024 * 1024)) + 'GB'
+};
+
+// 安全中间件
+if (config.security && config.security.enabled) {
+  // 使用Helmet保护HTTP头
+  app.use(helmet());
+  
+  // 启用速率限制
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15分钟
+    max: 100, // 每个IP限制100个请求
+    standardHeaders: true,
+    legacyHeaders: false
+  });
+  app.use(limiter);
+}
+
+// 基本中间件
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Prometheus监控
+const collectDefaultMetrics = promClient.collectDefaultMetrics;
+collectDefaultMetrics({ timeout: 5000 });
+
+// 路由
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Kirara Agent 服务正在运行',
+    version: config.agent.version,
+    system: systemInfo,
+    documentation: '/docs'
+  });
+});
+
+app.get('/docs', (req, res) => {
+  res.json({
+    description: 'Kirara Agent API 文档',
+    endpoints: {
+      '/': 'API根路径，返回服务状态',
+      '/api/status': '获取代理状态',
+      '/api/health': '健康检查端点',
+      '/api/metrics': 'Prometheus监控指标',
+      '/api/system': '系统信息'
+    }
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'running',
+    version: config.agent.version,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/system', (req, res) => {
+  res.json(systemInfo);
+});
+
+app.get('/api/metrics', async (req, res) => {
+  res.set('Content-Type', promClient.register.contentType);
+  res.end(await promClient.register.metrics());
+});
+
+// 错误处理中间件
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: '服务器内部错误', message: err.message });
+});
+
+// 启动服务器
+let server;
+
+if (config.security && config.security.ssl && config.security.ssl.enabled) {
+  try {
+    // 检查SSL证书
+    const sslOptions = {
+      key: fs.readFileSync(config.security.ssl.key),
+      cert: fs.readFileSync(config.security.ssl.cert)
+    };
+    
+    // 创建HTTPS服务器
+    server = https.createServer(sslOptions, app);
+    console.log(`Kirara Agent 服务已启动，HTTPS监听端口: ${port}`);
+  } catch (err) {
+    console.error('SSL证书加载失败，回退到HTTP模式:', err.message);
+    server = http.createServer(app);
+    console.log(`Kirara Agent 服务已启动，HTTP监听端口: ${port}`);
+  }
+} else {
+  // 创建HTTP服务器
+  server = http.createServer(app);
+  console.log(`Kirara Agent 服务已启动，HTTP监听端口: ${port}`);
+}
+
+server.listen(port, () => {
+  console.log(`日志级别: ${process.env.LOG_LEVEL || config.server.logLevel || 'info'}`);
+  console.log(`系统信息: ${systemInfo.platform} ${systemInfo.release} (${systemInfo.arch})`);
+  console.log(`访问 http://localhost:${port} 查看服务状态`);
+});
+
+// 优雅关闭
+process.on('SIGTERM', () => {
+  console.log('收到SIGTERM信号，正在关闭服务...');
+  server.close(() => {
+    console.log('服务已关闭');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('收到SIGINT信号，正在关闭服务...');
+  server.close(() => {
+    console.log('服务已关闭');
+    process.exit(0);
+  });
+});
